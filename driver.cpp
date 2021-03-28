@@ -17,28 +17,29 @@ void clear(void) {
 
 int main(int argc, char * argv[]) {
 
-    std::string fileName = "edge_cases.txt";
+    std::string fileName = "";
 
     std::vector<FNNGRE002::TagStruct> tags;
-    tags = parse_data(fileName, tags);
 
     std::string in = "Start";
 
     while(in.compare("q")!=0) {
         in = "Start";
-        cout << "Choose an option from the following:"
+        std::cout << "Choose an option from the following:"
                 "\nr: Read and parse file"
                 "\np: Print all tags"
                 "\nd: Write tags and data"
                 "\nl: List tag data"
                 "\nq: Quit\n\n";
 
-        cin >> in;
-        cout << "\n";
+        std::cin >> in;
+        std::cout << "\n";
 
         switch (in[0]) {
             case 'r': {
-                
+                std::cout << "Enter the filename: ";
+                std::cin >> fileName;
+                tags = parse_data(fileName, tags);
                 break;
             }
             case 'p': {
@@ -58,7 +59,7 @@ int main(int argc, char * argv[]) {
                 break;
             }
             default: {
-                cout << "Invalid option. Please try again.\n\n";
+                std::cout << "Invalid option. Please try again.\n\n";
             }
         }
 

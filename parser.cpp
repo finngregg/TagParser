@@ -15,6 +15,7 @@ namespace FNNGRE002{
             while(!file.eof()){
                 bool text_flag = false;
                 bool tag_flag = false;
+                std::string current_tag;
                 while(getline(file, line)){
                     std::string name;
                     std::string plain_text;
@@ -30,6 +31,7 @@ namespace FNNGRE002{
                         }
                         if (tag_flag) {
                             if (ch == '<' || ch == '/'){
+                                current_tag = "";
                                 continue;
                             }
                             if (ch != '>' ) {
@@ -38,6 +40,7 @@ namespace FNNGRE002{
                             else {
                                 tag_flag = false;
                                 text_flag = true;
+                                current_tag = name;
                                 if (find_pos(name, data) == -1){
                                     FNNGRE002::TagStruct temp = {name, 1, ""};
                                 }
