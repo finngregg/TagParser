@@ -16,7 +16,7 @@ namespace FNNGRE002{
     struct TagStruct{
         std::string name;
         int pairs;
-        std::string data;
+        std::string plain_text;
     };
 }
 
