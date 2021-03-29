@@ -9,6 +9,9 @@
 #include <string>
 #include <cstdlib>
 
+#include <cstdlib>
+#include <streambuf>
+
 #ifndef TAG_STRUCT_H
 #define TAG_STRUCT_H
 

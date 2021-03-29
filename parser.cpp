@@ -2,7 +2,6 @@
 // Created by Gregg Finn on 2021/03/26.
 //
 
-
 #include "parser.h"
 
 namespace FNNGRE002{
@@ -13,62 +12,76 @@ namespace FNNGRE002{
 
         if(file){
             while(!file.eof()){
-                bool text_flag = false;
-                bool tag_flag = false;
-                std::string current_tag;
                 while(getline(file, line)){
+                    bool text_flag = true;
+                    bool tag_flag = false;
                     std::string name;
                     std::string plain_text;
                     for(int i=0; i<line.length();i++) {
                         char ch = line[i];
+                        char next = line[i+1];
 
-                        if (text_flag || !tag_flag ) {
+                        /*if (!tag_flag) {
                             if (ch == '<') {
                                 tag_flag = true;
                                 text_flag = false;
                             }
-                            
-                        }
+                            continue;
+                        } */
                         if (tag_flag) {
-                            if (ch == '<' || ch == '/'){
-                                current_tag = "";
-                                continue;
-                            }
-                            if (ch != '>' ) {
-                                name.push_back(ch);
-                            }
-                            else {
+                            if (ch == '>' ) {
+                                if (find_pos(name, data) == -1){
+                                    FNNGRE002::TagStruct temp = {name, 0, ""};
+                                    data.push_back(temp);
+                                }
                                 tag_flag = false;
                                 text_flag = true;
-                                current_tag = name;
-                                if (find_pos(name, data) == -1){
-                                    FNNGRE002::TagStruct temp = {name, 1, ""};
-                                }
-                                else {
-                                    int pos = find_pos(name, data);
-                                    data[pos].pairs += 1;
-                                }
+                                continue;
+                            }
+                            else {
+                                name.push_back(ch);
+                                
                             }
                         }
                         if (text_flag) {
-                            if (ch != '<') {
-                                plain_text.push_back(ch);
+                            if (ch == '<') {
+                                if (next == '/'){
+                                    std::string tag_close;
+                                    for(int j=i+2; j<line.length();j++) {
+                                        if (line[j] != '>') {
+                                            tag_close.push_back(line[j]);
+                                        }
+                                        else {
+                                            int pos = find_pos(tag_close, data);
+                                            data[pos].pairs += 1;
+                                            if (data[pos].plain_text == "") {
+                                                data[pos].plain_text += plain_text;
+                                            }
+                                            else {
+                                                data[pos].plain_text += ":" + plain_text;
+                                            }
+                                            i = j;
+                                            break;
+                                        }
+                                    }
+                                }
+                                else {
+                                    tag_flag = true;
+                                    text_flag = false;
+                                }
                             }
                             else {
-                                tag_flag = true;
-                                text_flag = false;
-                                int pos = find_pos(name, data);
-                                data[pos].plain_text += ':' + plain_text;
-                                }
+                                plain_text.push_back(ch);
                             }
                         }
                     }
                 }
-            return data;
-            }   
+            }
+        
+        }   
+        return data;
 
-
-        }
+    }
     
     int find_pos(std::string name, std::vector<TagStruct> data){
         for (int i=0; i < data.size(); i++){
@@ -79,4 +92,13 @@ namespace FNNGRE002{
         return -1;
     }
 
+    std::string print_tags(std::vector<TagStruct> data){
+        std::string out = "";
+        for (int i=0; i < data.size(); i++){
+            out += data[i].name + ", ";
+            out += std::to_string(data[i].pairs) + ", ";
+            out += data[i].plain_text + '\n';
+        }
+        return out;
+    }
 }

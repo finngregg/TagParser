@@ -1,12 +1,3 @@
-#include <iostream>
-#include <sstream>
-#include <vector>
-#include <fstream>
-#include <string>
-#include <cstdlib>
-
-#include "tagstruct.h"
-#include "parser.h"
 #include "parser.cpp"
 
 void clear(void);
@@ -17,7 +8,7 @@ void clear(void) {
 
 int main(int argc, char * argv[]) {
 
-    std::string fileName = "";
+    std::string fileName;
 
     std::vector<FNNGRE002::TagStruct> tags;
 
@@ -40,6 +31,8 @@ int main(int argc, char * argv[]) {
                 std::cout << "Enter the filename: ";
                 std::cin >> fileName;
                 tags = parse_data(fileName, tags);
+                std::string out = print_tags(tags);
+                std::cout << out;
                 break;
             }
             case 'p': {
@@ -66,3 +59,4 @@ int main(int argc, char * argv[]) {
     }
     clear();
     return 0;
+}
