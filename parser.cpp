@@ -12,6 +12,7 @@ namespace FNNGRE002{
 
         if(file){
             while(!file.eof()){
+                int curr_pos;
                 while(getline(file, line)){
                     bool text_flag = true;
                     bool tag_flag = false;
@@ -26,6 +27,12 @@ namespace FNNGRE002{
                                 if (find_pos(name, data) == -1){
                                     FNNGRE002::TagStruct temp = {name, 0, ""};
                                     data.push_back(temp);
+                                    curr_pos = data.size() - 1;
+                                }
+                                else {
+                                    int pos = find_pos(name, data);
+                                    curr_pos = pos;
+                                    data[curr_pos].plain_text += ":";
                                 }
                                 tag_flag = false;
                                 text_flag = true;
@@ -38,7 +45,12 @@ namespace FNNGRE002{
                         }
                         if (text_flag) {
                             if (ch == '<') {
-                                if (next == '/'){
+                                if (next == ' '){
+                                    plain_text.push_back(ch);
+                                    continue;
+                                }
+                                else if (next == '/'){
+                                    curr_pos -= 1;
                                     std::string tag_close;
                                     for(int j=i+2; j<line.length();j++) {
                                         if (line[j] != '>') {
@@ -47,24 +59,45 @@ namespace FNNGRE002{
                                         else {
                                             int pos = find_pos(tag_close, data);
                                             data[pos].pairs += 1;
-                                            if (data[pos].plain_text == "") {
+                                            data[pos].plain_text += plain_text;
+                                            /*if (data[pos].plain_text == "") {
                                                 data[pos].plain_text += plain_text;
                                             }
                                             else {
-                                                data[pos].plain_text += ":" + plain_text;
-                                            }
+                                                data[pos].plain_text += plain_text;
+                                            }*/
                                             i = j;
                                             break;
                                         }
                                     }
                                 }
                                 else {
+                                    if (plain_text.length() != 0) {
+                                        if (data[curr_pos].plain_text == "") {
+                                            data[curr_pos].plain_text += plain_text;
+                                        }
+                                        else {
+                                        data[curr_pos].plain_text += ":" + plain_text;
+                                        }
+                                    }
                                     tag_flag = true;
                                     text_flag = false;
                                 }
                             }
                             else {
-                                plain_text.push_back(ch);
+                                if (i == line.length()-1) {
+                                    plain_text.push_back(ch);
+                                    data[curr_pos].plain_text += plain_text;
+                                    /*if (data[curr_pos].plain_text == "") {
+                                        data[curr_pos].plain_text += plain_text;
+                                    }
+                                    else {
+                                        data[curr_pos].plain_text += plain_text;
+                                    }*/
+                                }
+                                else {
+                                    plain_text.push_back(ch);
+                                }
                             }
                         }
                     }
