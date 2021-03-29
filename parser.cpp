@@ -21,13 +21,6 @@ namespace FNNGRE002{
                         char ch = line[i];
                         char next = line[i+1];
 
-                        /*if (!tag_flag) {
-                            if (ch == '<') {
-                                tag_flag = true;
-                                text_flag = false;
-                            }
-                            continue;
-                        } */
                         if (tag_flag) {
                             if (ch == '>' ) {
                                 if (find_pos(name, data) == -1){
@@ -98,6 +91,20 @@ namespace FNNGRE002{
             out += data[i].name + ", ";
             out += std::to_string(data[i].pairs) + ", ";
             out += data[i].plain_text + '\n';
+        }
+        return out;
+    }
+
+    std::string print_tag(std::string name, std::vector<TagStruct> data){
+        std::string out = "";
+        if (find_pos(name, data) != -1){
+            int pos = find_pos(name, data);
+            out += data[pos].name + ", ";
+            out += std::to_string(data[pos].pairs) + ", ";
+            out += data[pos].plain_text + '\n';
+        }
+        else {
+            out = "Tag does not exist";
         }
         return out;
     }

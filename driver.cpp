@@ -9,6 +9,7 @@ void clear(void) {
 int main(int argc, char * argv[]) {
 
     std::string fileName;
+    std::string tag_name;
 
     std::vector<FNNGRE002::TagStruct> tags;
 
@@ -31,20 +32,30 @@ int main(int argc, char * argv[]) {
                 std::cout << "Enter the filename: ";
                 std::cin >> fileName;
                 tags = parse_data(fileName, tags);
+                break;
+            }
+            case 'p': {
                 std::string out = print_tags(tags);
                 std::cout << out;
                 break;
             }
-            case 'p': {
-                
-                break;
-            }
             case 'd': {
-                
+                std::ofstream myfile ("tag.txt");
+                if (myfile.is_open())
+                {
+                    myfile << print_tags(tags);
+                    myfile.close();
+                }
+                else {
+                    std::cout << "Unable to open file";
+                    return 0;
+                }
                 break;
             }
             case 'l': {
-                
+                std::cout << "Enter the tag: ";
+                std::cin >> tag_name;
+                std::cout << print_tag(tag_name, tags);
                 break;
             }
           
